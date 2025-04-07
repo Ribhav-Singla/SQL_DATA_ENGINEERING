@@ -204,11 +204,11 @@ BEGIN
 		SELECT
 			REPLACE(cid, '-', '') AS cid, 
 			CASE
-				WHEN REGEXP_REPLACE(cntry, '[[:space:]]', '') = 'DE' THEN 'Germany'
-				WHEN REGEXP_REPLACE(cntry, '[[:space:]]', '') IN ('US', 'USA') THEN 'United States'
+				WHEN REPLACE(REPLACE(REPLACE(REPLACE(UPPER(cntry), '\r', ''), '\n', ''), '\t', ''), ' ', '') = 'DE' THEN 'Germany'
+				WHEN REPLACE(REPLACE(REPLACE(REPLACE(UPPER(cntry), '\r', ''), '\n', ''), '\t', ''), ' ', '') IN ('US', 'USA') THEN 'United States'
 				WHEN cntry IS NULL OR TRIM(cntry) = '' THEN 'n/a'
-				ELSE TRIM(cntry)
-			END AS cntry 
+				ELSE TRIM(REPLACE(REPLACE(REPLACE(REPLACE(cntry, '\r', ''), '\n', ''), '\t', ''), ' ', ' '))
+			END AS cntry
 		FROM bronze.erp_loc_a101;
     SET @end_time := NOW();
 	SELECT CONCAT("Load Duration: ", TIMESTAMPDIFF(SECOND, @start_time, @end_time), " seconds");

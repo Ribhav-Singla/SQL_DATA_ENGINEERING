@@ -204,10 +204,10 @@ BEGIN
 		SELECT
 			REPLACE(cid, '-', '') AS cid, 
 			CASE
-				WHEN REPLACE(REPLACE(REPLACE(REPLACE(UPPER(cntry), '\r', ''), '\n', ''), '\t', ''), ' ', '') = 'DE' THEN 'Germany'
-				WHEN REPLACE(REPLACE(REPLACE(REPLACE(UPPER(cntry), '\r', ''), '\n', ''), '\t', ''), ' ', '') IN ('US', 'USA') THEN 'United States'
-				WHEN cntry IS NULL OR TRIM(cntry) = '' THEN 'n/a'
-				ELSE TRIM(REPLACE(REPLACE(REPLACE(REPLACE(cntry, '\r', ''), '\n', ''), '\t', ''), ' ', ' '))
+				WHEN REPLACE(REPLACE(REPLACE(REPLACE(UPPER(REGEXP_REPLACE(cntry, '[\\r\\n\\t ]+', '')), '\r', ''), '\n', ''), '\t', ''), ' ', '') = 'DE' THEN 'Germany'
+				WHEN REPLACE(REPLACE(REPLACE(REPLACE(UPPER(REGEXP_REPLACE(cntry, '[\\r\\n\\t ]+', '')), '\r', ''), '\n', ''), '\t', ''), ' ', '') IN ('US', 'USA') THEN 'United States'
+				WHEN cntry IS NULL OR TRIM(REGEXP_REPLACE(cntry, '[\\r\\n\\t ]+', '')) = '' THEN 'n/a'
+				ELSE TRIM(REGEXP_REPLACE(cntry, '[\\r\\n\\t]+', ''))
 			END AS cntry
 		FROM bronze.erp_loc_a101;
     SET @end_time := NOW();

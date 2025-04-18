@@ -96,18 +96,22 @@ The final outputs are used in:
 ## 📁 Folder Structure
 
 ```plaintext
-├── raw_data/                     # CSV files and ingestion scripts
-│   └── (CRM and ERP raw data files)
+├── Project.png                  # Project overview diagram
 │
-├── sql_scripts/                 # SQL scripts for each pipeline layer
-│   ├── bronze_ingestion.sql     # 1. Bronze Layer: Raw ingestion into tables
-│   ├── silver_transforms.sql    # 2. Silver Layer: Cleaning & standardization
-│   └── gold_layer_views.sql     # 3. Gold Layer: Views using star schema
+├── DATE_WAREHOUSE/              # Data warehouse implementation
+│   ├── datasets/                # Source datasets
+│   ├── docs/                    # Documentation
+│   ├── scripts/                 # SQL scripts for each pipeline layer
+│   │   ├── bronze/              # 1. Bronze Layer: Raw ingestion scripts
+│   │   ├── silver/              # 2. Silver Layer: Cleaning & standardization scripts
+│   │   ├── gold/                # 3. Gold Layer: Star schema views
+│   │   └── init_database.sql    # Database initialization script
+│   └── tests/                   # Test scripts
 │
-├── eda_queries.sql              # SQL for exploratory data analysis
-├── advanced_analytics.sql       # SQL for business case-driven analytics
+├── EXPLORATORY_DATA_ANALYSIS/   # EDA implementation
+│   └── scripts/                 # SQL scripts for exploratory data analysis
 │
-├── reports/                     # Sample reports, dashboards, screenshots
-│   └── (Power BI / Tableau visual examples)
+├── ADVANCED_DATA_ANALYTICS/     # Advanced analytics implementation
+│   └── scripts/                 # SQL scripts for business case-driven analytics
 │
 └── README.md                    # Project documentation

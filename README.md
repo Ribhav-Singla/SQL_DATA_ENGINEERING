@@ -1,5 +1,7 @@
 # 📊 End-to-End SQL Data Analytics Project
 
+![Project Overview](Project.png)
+
 This repository contains an end-to-end SQL project that showcases the design and implementation of a complete data pipeline using a multi-layered **Data Warehouse Architecture** (Bronze → Silver → Gold), followed by **Exploratory Data Analysis (EDA)** and **Advanced Data Analytics** to drive business insights.
 
 ---

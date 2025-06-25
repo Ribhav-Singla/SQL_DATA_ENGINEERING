@@ -151,24 +151,30 @@ BEGIN
         		WHEN sls_sales IS NULL OR sls_sales <= 0 
 					OR sls_sales != sls_quantity * ABS(
                  		CASE 
-                     		WHEN sls_price IS NULL OR sls_price <= 0 
-                         		THEN sls_sales / NULLIF(sls_quantity, 0)
-                     			ELSE sls_price
-                 		END
+							WHEN sls_price IS NULL OR sls_price = 0 
+								THEN sls_sales / NULLIF(sls_quantity, 0)
+							WHEN sls_price < 0 
+								THEN ABS(sls_price)
+							ELSE sls_price
+						END
             		)
         			THEN sls_quantity * ABS(
             			CASE 
-                			WHEN sls_price IS NULL OR sls_price <= 0 
-                    			THEN sls_sales / NULLIF(sls_quantity, 0)
-								ELSE sls_price
+							WHEN sls_price IS NULL OR sls_price = 0 
+								THEN sls_sales / NULLIF(sls_quantity, 0)
+							WHEN sls_price < 0 
+								THEN ABS(sls_price)
+							ELSE sls_price
 						END
 					)
 					ELSE sls_sales
 			END AS sls_sales,
 			sls_quantity,
 			CASE 
-				WHEN sls_price IS NULL OR sls_price <= 0 
+				WHEN sls_price IS NULL OR sls_price = 0 
 					THEN sls_sales / NULLIF(sls_quantity, 0)
+				WHEN sls_price < 0 
+					THEN ABS(sls_price)
 				ELSE sls_price
 			END AS sls_price
 		FROM bronze.crm_sales_details;
@@ -196,8 +202,8 @@ BEGIN
 				ELSE bdate
 			END AS bdate,
 			CASE
-				WHEN REGEXP_LIKE(TRIM(gen), '^(?i)f(emale)?$') THEN 'Female'
-				WHEN REGEXP_LIKE(TRIM(gen), '^(?i)m(ale)?$') THEN 'Male'
+				WHEN UPPER(TRIM(REPLACE(gen,'\r',''))) in ('F', 'FEMALE') THEN 'Female'
+                WHEN UPPER(TRIM(REPLACE(gen,'\r',''))) in ('M', 'MALE') THEN 'Male'
 				ELSE 'n/a'
 			END AS gen
 		FROM bronze.erp_cust_az12;
@@ -217,10 +223,10 @@ BEGIN
 		SELECT
 			REPLACE(cid, '-', '') AS cid, 
 			CASE
-				WHEN REPLACE(REPLACE(REPLACE(REPLACE(UPPER(REGEXP_REPLACE(cntry, '[\\r\\n\\t ]+', '')), '\r', ''), '\n', ''), '\t', ''), ' ', '') = 'DE' THEN 'Germany'
-				WHEN REPLACE(REPLACE(REPLACE(REPLACE(UPPER(REGEXP_REPLACE(cntry, '[\\r\\n\\t ]+', '')), '\r', ''), '\n', ''), '\t', ''), ' ', '') IN ('US', 'USA') THEN 'United States'
-				WHEN cntry IS NULL OR TRIM(REGEXP_REPLACE(cntry, '[\\r\\n\\t ]+', '')) = '' THEN 'n/a'
-				ELSE TRIM(REGEXP_REPLACE(cntry, '[\\r\\n\\t]+', ''))
+				WHEN UPPER(TRIM(REPLACE(cntry,'\r',''))) = 'DE' THEN 'Germany'
+				WHEN UPPER(TRIM(REPLACE(cntry,'\r',''))) IN ('US', 'USA') THEN 'United States'
+				WHEN TRIM(REPLACE(cntry,'\r','')) = '' OR cntry IS NULL THEN 'n/a'
+				ELSE TRIM(REPLACE(cntry,'\r',''))
 			END AS cntry
 		FROM bronze.erp_loc_a101;
     SET @end_time := NOW();
@@ -242,7 +248,11 @@ BEGIN
 			id,
 			cat,
 			subcat,
-			maintenance
+			CASE
+				WHEN UPPER(TRIM(REPLACE(maintenance,'\r',''))) = 'YES' THEN 'Yes'
+				WHEN UPPER(TRIM(REPLACE(maintenance,'\r',''))) = 'NO' THEN 'No'
+				ELSE 'n/a'
+			END AS maintenance
 		FROM bronze.erp_px_cat_g1v2;
     SET @end_time := NOW();
 	SELECT CONCAT("Load Duration: ", TIMESTAMPDIFF(SECOND, @start_time, @end_time), " seconds");

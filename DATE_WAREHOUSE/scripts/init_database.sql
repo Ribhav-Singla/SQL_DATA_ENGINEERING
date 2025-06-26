@@ -13,14 +13,17 @@ WARNING:
     and ensure you have proper backups before running this script.
 */
 
-DROP DATABASE IF EXISTS DataWarehouse;
-CREATE DATABASE DataWarehouse;
-
+-- inside the bronze layer
 DROP DATABASE IF EXISTS bronze;
 CREATE database bronze;
 
+-- Inside the silver layer
 DROP DATABASE IF EXISTS silver;
 CREATE database silver;
 
-DROP DATABASE IF EXISTS gold;
-CREATE database gold;
+-- Inside the gold layer
+DROP DATABASE IF EXISTS star;
+CREATE database star;
+
+DROP DATABASE IF EXISTS snowflake;
+CREATE DATABASE snowflake;

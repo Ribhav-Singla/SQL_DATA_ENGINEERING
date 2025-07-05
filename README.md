@@ -118,7 +118,7 @@ This model is optimized for fast querying and simple aggregations.
 ![Project Overview](DATE_WAREHOUSE/docs/snowflake_schema.svg)
 
 -   **Fact Table**: `fact_sales`
--   **Dimension Tables**: `dim_customer`, `dim_products`, `dim_country`, `dim_category`, `dim_subcategory`, `dim_product_line`
+-   **Dimension Tables**: `dim_customers`, `dim_products`, `dim_country`, `dim_category`, `dim_subcategory`, `dim_product_line`
 
 This model is more normalized, reducing data redundancy but requiring more complex joins for queries.
 

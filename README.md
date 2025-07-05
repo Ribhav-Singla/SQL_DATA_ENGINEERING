@@ -1,117 +1,124 @@
-# 📊 End-to-End SQL Data Analytics Project
+# SQL Data Engineering Project
 
-![Project Overview](Project.png)
+This project demonstrates a complete data engineering workflow, from raw data ingestion to building a sophisticated data warehouse. It includes data extraction, transformation, and loading (ETL) processes, data quality checks, and the creation of both Star and Snowflake schemas for analytical purposes.
 
-This repository contains an end-to-end SQL project that showcases the design and implementation of a complete data pipeline using a multi-layered **Data Warehouse Architecture** (Bronze → Silver → Gold), followed by **Exploratory Data Analysis (EDA)** and **Advanced Data Analytics** to drive business insights.
+## Project Structure
 
----
+The project is organized into the following directories:
 
-## 🗂️ Project Overview
+- **`DATE_WAREHOUSE/`**: Contains all the core data warehousing components.
+    - **`datasets/`**: Holds the raw source data in CSV format.
+        - `source_crm/`: Customer, product, and sales data.
+        - `source_erp/`: Customer, location, and category data.
+    - **`docs/`**: Contains project documentation.
+        - `data_catalog.md`: A detailed catalog of the Gold Layer tables.
+        - Various diagrams illustrating the data architecture, flow, and models.
+    - **`scripts/`**: Contains all the SQL scripts for the ETL process.
+        - `init_database.sql`: Initializes the databases (bronze, silver, star, snowflake).
+        - `bronze/`: Scripts to load raw data into the Bronze Layer.
+        - `silver/`: Scripts to clean and transform data into the Silver Layer.
+        - `gold/`: Scripts to load data into the Gold Layer, with subdirectories for:
+            - `star/`: Star Schema model.
+            - `snowflake/`: Snowflake Schema model.
+    - **`tests/`**: Contains SQL scripts for data quality checks.
+        - `quality_checks_silver.sql`: Checks for the Silver Layer.
+        - `quality_checks_gold.sql`: Checks for the Gold Layer.
+- **`ADVANCED_DATA_ANALYTICS.ipynb`**: Jupyter Notebook for advanced data analysis on the Gold Layer.
+- **`EXPLORATORY_DATA_ANALYSIS.ipynb`**: Jupyter Notebook for exploratory data analysis (EDA) on the Silver Layer.
 
-> A modern SQL-based solution to ingest, clean, transform, and analyze data for business intelligence, reporting, and machine learning use cases.
+## Data Warehouse Architecture
 
----
+The data warehouse follows a multi-layered architecture:
 
-## 🏗️ Architecture: Bronze → Silver → Gold
+1.  **Bronze Layer**: Raw, unfiltered data is ingested from the source CSV files into the `bronze` database. This layer serves as a staging area.
+2.  **Silver Layer**: Data from the Bronze Layer is cleaned, transformed, and standardized. This layer provides a more refined and queryable version of the data, stored in the `silver` database.
+3.  **Gold Layer**: The final, business-ready layer, designed for analytics and reporting. This project implements two different data models in the Gold Layer:
+    -   **Star Schema**: A traditional data warehouse schema with a central fact table (`fact_sales`) and denormalized dimension tables (`dim_customers`, `dim_products`). Stored in the `star` database.
+    -   **Snowflake Schema**: A more normalized version of the star schema, where dimension tables are broken down into further, more normalized tables. Stored in the `snowflake` database.
 
-This project follows a standard Data Lakehouse approach using the following layers:
+## How to Run the Project
 
-### 🔸 Bronze Layer – *Raw Data Ingestion*
-- 📥 Sources: CRM, ERP Systems, CSV Files
-- 🧱 Object Type: Tables
-- ⚙️ Loading Methods:
-  - Batch Processing
-  - Full Load
-  - Truncate & Insert
-- ❌ No data model applied
-- 🗃️ **Purpose**: Stores raw data as-is from source systems. Data is ingested from CSV Files into SQL Server Database.
+1.  **Initialize the Databases**:
+    Run the `init_database.sql` script to create the `bronze`, `silver`, `star`, and `snowflake` databases.
 
-### 🔹 Silver Layer – *Cleaned & Standardized Data*
-- 🧼 Data Cleaning & Standardization
-- 🧱 Object Type: Tables
-- 🧬 Data Model: Wide Tables (Wide-1)
-- 🔁 Used for intermediate transformations and staging
-- 🗃️ **Purpose**: Includes data cleansing, standardization, and normalization processes to prepare data for analysis.
+    ```sql
+    -- Run this in your MySQL client
+    SOURCE DATE_WAREHOUSE/scripts/init_database.sql;
+    ```
 
-### 🟡 Gold Layer – *Business-Ready Data*
-- 🔄 Data Integration & Aggregation
-- 📊 Business Logic Implementation
-- 🧱 Object Type: Views
-- ⭐ Data Model: Star Schema (Fact & Dimension Tables)
-- ✅ Used for reporting and advanced analytics
-- 🗃️ **Purpose**: Houses business-ready data modeled into a star schema required for reporting and analytics.
+2.  **Load the Bronze Layer**:
+    Execute the `load_bronze.sql` script to ingest the raw data from the CSV files into the `bronze` database.
 
----
+    ```sql
+    -- Run this in your MySQL client
+    SOURCE DATE_WAREHOUSE/scripts/bronze/load_bronze.sql;
+    ```
 
-## 🔍 Exploratory Data Analysis (EDA)
+3.  **Load the Silver Layer**:
+    Run the `proc_load_silver.sql` script to create and then call the stored procedure that cleans and transforms the data from the Bronze Layer to the Silver Layer.
 
-- 🛠️ Performed using SQL queries
-- 🧾 Tasks:
-  - Basic Queries
-  - Data Profiling
-  - Simple Aggregations
-  - Subqueries
+    ```sql
+    -- Run this in your MySQL client
+    SOURCE DATE_WAREHOUSE/scripts/silver/proc_load_silver.sql;
+    CALL silver.load_silver();
+    ```
 
----
+4.  **Run Silver Layer Quality Checks**:
+    Execute the `quality_checks_silver.sql` script to verify the data quality in the Silver Layer.
 
-## 📈 Advanced Data Analytics
+    ```sql
+    -- Run this in your MySQL client
+    SOURCE DATE_WAREHOUSE/tests/quality_checks_silver.sql;
+    ```
 
-> Focused on solving business use cases and generating actionable insights
+5.  **Load the Gold Layer**:
+    Choose which schema you want to load (or load both).
 
-- 🧠 Complex SQL Queries
-- 🔁 Window Functions
-- 🧵 CTEs (Common Table Expressions)
-- 🔍 Nested Subqueries
-- 📄 Report Generation
+    -   **Star Schema**:
+        ```sql
+        -- Run this in your MySQL client
+        SOURCE DATE_WAREHOUSE/scripts/gold/star/proc_load_star.sql;
+        CALL star.pro_load_star();
+        ```
 
----
+    -   **Snowflake Schema**:
+        ```sql
+        -- Run this in your MySQL client
+        SOURCE DATE_WAREHOUSE/scripts/gold/snowflake/proc_load_snowflake.sql;
+        CALL snowflake.pro_load_snowflake();
+        ```
 
-## 🚀 Consumption Layer
+6.  **Run Gold Layer Quality Checks**:
+    Execute the `quality_checks_gold.sql` script to verify the data integrity of the Gold Layer.
 
-The final outputs are used in:
-- 📊 **BI & Reporting Dashboards**
-- 🧪 **Ad-Hoc SQL Analysis**
-- 🤖 **Machine Learning Pipelines**
+    ```sql
+    -- Run this in your MySQL client
+    SOURCE DATE_WAREHOUSE/tests/quality_checks_gold.sql;
+    ```
 
----
+7.  **Perform Data Analysis**:
+    -   Use the `EXPLORATORY_DATA_ANALYSIS.ipynb` notebook to explore the cleaned data in the Silver Layer.
+    -   Use the `ADVANCED_DATA_ANALYTICS.ipynb` notebook to perform more in-depth analysis on the structured data in the Gold Layer.
 
-## 🛠️ Tech Stack
+## Data Models
 
-- **Database**: MySQL
-- **Tools**: SQL, Excel, BI Tools (like Power BI or Tableau)
-- **Architecture**: Layered Data Warehouse (Bronze/Silver/Gold)
+### Star Schema
 
----
+-   **Fact Table**: `fact_sales`
+-   **Dimension Tables**: `dim_customers`, `dim_products`
 
-## 🧠 What are CRM & ERP Systems?
+This model is optimized for fast querying and simple aggregations.
 
-| CRM | ERP |
-|-----|-----|
-| Customer Relationship Management system | Enterprise Resource Planning system |
-| Manages external-facing activities like sales and customer support | Manages internal processes like inventory, HR, finance |
-| Examples: Salesforce, Zoho CRM | Examples: SAP, Oracle ERP, Odoo |
+### Snowflake Schema
 
----
+-   **Fact Table**: `fact_sales`
+-   **Dimension Tables**: `dim_customer`, `dim_products`, `dim_country`, `dim_category`, `dim_subcategory`, `dim_product_line`
 
-## 📁 Folder Structure
+This model is more normalized, reducing data redundancy but requiring more complex joins for queries.
 
-```plaintext
-├── Project.png                  # Project overview diagram
-│
-├── DATE_WAREHOUSE/              # Data warehouse implementation
-│   ├── datasets/                # Source datasets
-│   ├── docs/                    # Documentation
-│   ├── scripts/                 # SQL scripts for each pipeline layer
-│   │   ├── bronze/              # 1. Bronze Layer: Raw ingestion scripts
-│   │   ├── silver/              # 2. Silver Layer: Cleaning & standardization scripts
-│   │   ├── gold/                # 3. Gold Layer: Star schema views
-│   │   └── init_database.sql    # Database initialization script
-│   └── tests/                   # Test scripts
-│
-├── EXPLORATORY_DATA_ANALYSIS/   # EDA implementation
-│   └── scripts/                 # SQL scripts for exploratory data analysis
-│
-├── ADVANCED_DATA_ANALYTICS/     # Advanced analytics implementation
-│   └── scripts/                 # SQL scripts for business case-driven analytics
-│
-└── README.md                    # Project documentation
+## Tools and Technologies
+
+-   **Database**: MySQL
+-   **Language**: SQL, Python
+-   **Tools**: Jupyter Notebook, Git
+-   **Libraries**: pandas, matplotlib, seaborn

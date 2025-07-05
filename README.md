@@ -2,6 +2,8 @@
 
 This project demonstrates a complete data engineering workflow, from raw data ingestion to building a sophisticated data warehouse. It includes data extraction, transformation, and loading (ETL) processes, data quality checks, and the creation of both Star and Snowflake schemas for analytical purposes.
 
+![Project Overview](DATE_WAREHOUSE\docs\Architecture.svg)
+
 ## Project Structure
 
 The project is organized into the following directories:
@@ -104,12 +106,16 @@ The data warehouse follows a multi-layered architecture:
 
 ### Star Schema
 
+![Project Overview](DATE_WAREHOUSE\docs\star schema.svg)
+
 -   **Fact Table**: `fact_sales`
 -   **Dimension Tables**: `dim_customers`, `dim_products`
 
 This model is optimized for fast querying and simple aggregations.
 
 ### Snowflake Schema
+
+![Project Overview](DATE_WAREHOUSE\docs\snowflake schema.svg)
 
 -   **Fact Table**: `fact_sales`
 -   **Dimension Tables**: `dim_customer`, `dim_products`, `dim_country`, `dim_category`, `dim_subcategory`, `dim_product_line`

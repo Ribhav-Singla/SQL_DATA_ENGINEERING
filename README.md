@@ -134,7 +134,7 @@ The final consumption layer of this data warehouse is a comprehensive Power BI d
 - **Geographic Analysis**: Revenue and customer distribution across different countries
 - **Product Performance**: Category-wise analysis and top 5 performing products
 
-The dashboard connects directly to the Gold Layer tables (Star/Snowflake schema) for real-time reporting and analysis.
+The dashboard connects directly to the Gold Layer tables (Star/Snowflake schema) reporting and analysis.
 
 ## Tools and Technologies
 

@@ -122,9 +122,23 @@ This model is optimized for fast querying and simple aggregations.
 
 This model is more normalized, reducing data redundancy but requiring more complex joins for queries.
 
+## Power BI Dashboard (Consume Layer)
+
+The final consumption layer of this data warehouse is a comprehensive Power BI dashboard that provides business insights and visualizations:
+
+![Power BI Dashboard](powerbi_exports/Dashboard.jpg)
+
+### Dashboard Features:
+- **Executive Summary**: Key performance indicators (KPIs) including total revenue, orders, quantity and customers
+- **Sales Trends**: Time series analysis showing yearly sales patterns
+- **Geographic Analysis**: Revenue and customer distribution across different countries
+- **Product Performance**: Category-wise analysis and top 5 performing products
+
+The dashboard connects directly to the Gold Layer tables (Star/Snowflake schema) for real-time reporting and analysis.
+
 ## Tools and Technologies
 
 -   **Database**: MySQL
 -   **Language**: SQL, Python
--   **Tools**: Jupyter Notebook, Git
+-   **Tools**: Jupyter Notebook, Git, Power BI
 -   **Libraries**: pandas, matplotlib, seaborn
